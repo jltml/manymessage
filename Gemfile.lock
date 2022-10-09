@@ -85,6 +85,8 @@ GEM
     wisper (2.0.1)
 
 PLATFORMS
+  x86_64-darwin-19
+  x86_64-darwin-20
   x86_64-darwin-21
 
 DEPENDENCIES
