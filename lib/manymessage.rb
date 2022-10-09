@@ -12,19 +12,29 @@ require "imessage"
 require "tty-progressbar"
 require "tty-prompt"
 require_relative "manymessage/version"
+require_relative "manymessage/cli"
 
 module Manymessage
   class Error < StandardError; end
   # Your code goes here...
 
-  def go
-    input_path = options[:input] || Pathname.new("#{__dir__}/input.txt").to_s
-    contacts_cli_path = options[:contacts_cli] || Pathname.new("#{__dir__}/contacts-cli").to_s
+  def self.send(options)
+    if !options[:input_path] && !options[:message_path]
+      warn Paint["Missing both required input files (list of contacts and message)", :red, :bold]
+      warn Paint["Please try again with something like `manymessage --to FILE --message FILE`", :red]
+      warn Paint["See `manymessage --help for more help`", :red]
+      abort
+    end
+    abort Paint["No input file specified with list of contacts", :red, :bold] unless options[:input_path]
+    abort Paint["No message file specified", :red, :bold] unless options[:input_path]
+    input_path = options[:input_path]
+    contacts_cli_path = options[:contacts_cli_path] || Pathname.new(__dir__).parent.to_s + "/exe/contacts_cli"
 
     if File.exist?(contacts_cli_path) || File.which("contacts-cli")
       puts Paint["→ contacts-cli already found; skipping download and chmod", :faint]
     elsif File.which("curl")
       puts Paint["→ Downloading contacts-cli from https://github.com/pepebecker/contacts-cli/releases/download/v0.1.0/contacts-cli…", :bold]
+      puts Paint["→ Downloading to #{contacts_cli_path}"]
       `curl -o '#{contacts_cli_path}' -L 'https://github.com/pepebecker/contacts-cli/releases/download/v0.1.0/contacts-cli'`
       `chmod +x '#{contacts_cli_path}'`
       puts
@@ -57,7 +67,7 @@ module Manymessage
       names << {first: line_array[0], last: line_array[1]}
     end
 
-    if options[:self]
+    if options[:include_self]
       id_f = `id -F`
       line_array = id_f.split(" ")
       names << {first: line_array[0], last: line_array[1]}
@@ -144,15 +154,7 @@ module Manymessage
     counter = 0
     bar = TTY::ProgressBar.new("sending… [:bar] :current/:total • :eta", total: phones.length, bar_format: :box, clear: true)
 
-    message = <<~END.strip
-      Hi! You're invited to my graduation party, if it'd be of enjoyment — it's on Sunday, June 12th, from 1-4pm, at our house, for which the address is 2450 Trading Post Trail, Afton, MN 55001.
-
-      I also made a little website for it: you can add it to your calendar, get directions, and send in your phone number (if you'd like) so that I can update you on where to park, since parking might be kind of tricky on the narrow roads around our house. You can visit it at https://grad.jltml.me.
-
-      And finally, I tried to send a photo of the invitation, but it wouldn't work, so I just uploaded it here: https://grad.jltml.me/invite.html
-
-      I hope that you're able to come, but no worries if you can't make it! (Also, if this message reads weirdly, it's because I'm sending it to a bunch of people… for some reason, instead of just texting each person or even copying/pasting, I wrote a program to do it)
-    END
+    message = File.read(options[:message_path]).strip
 
     phones.each do |name, phone|
       sender.deliver({
@@ -168,5 +170,4 @@ module Manymessage
 
     puts Paint["→ Sent message to #{counter} #{counter == 1 ? "person" : "people"}", :green, :bold]
   end
-
 end

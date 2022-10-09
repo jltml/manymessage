@@ -6,4 +6,4 @@ $LOAD_PATH.unshift(
 
 require "manymessage"
 
-Manymessage::Cli.new.run
+Manymessage::Cli.new(ARGV).run

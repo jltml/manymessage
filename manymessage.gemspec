@@ -9,12 +9,10 @@ Gem::Specification.new do |spec|
   spec.email = ["8261330+jltml@users.noreply.github.com"]
 
   spec.summary = "Send mass texts super easily!"
-  # spec.description = "TODO: Write a longer description or delete this line."
+  spec.description = "Given a text file with a list of names, this CLI will find their phone numbers from your Contacts app and then send a message to each of them."
   spec.homepage = "https://github.com/jltml/manymessage"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-
-  # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
