@@ -3,10 +3,6 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Which Git tag to release (e.g. vO.1.O)'
 
 jobs:
   homebrew:
@@ -24,8 +20,19 @@ jobs:
           # Formula name, required
           formula: manymessage
           # Optional, will be determined automatically
-          tag: ${{github.ref || github.event.inputs.tags}}
+          tag: ${{github.ref}}
           # Optional, will be determined automatically
           revision: ${{github.sha}}
           # Optional, if don't want to check for already open PRs
           force: false
+  rubygems:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Release Gem
+        if: contains(github.ref, 'refs/tags/v')
+        uses: cadwallion/publish-rubygems-action@master
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          RUBYGEMS_API_KEY: ${{secrets.RUBYGEMS_API_KEY}}
+          RELEASE_COMMAND: "rake workflow:release:gem"
