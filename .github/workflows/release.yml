@@ -1,0 +1,27 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  homebrew:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Update Homebrew formula
+        uses: dawidd6/action-homebrew-bump-formula@v3
+        with:
+          # Required, custom GitHub access token with only the 'public_repo' scope
+          token: ${{secrets.TOKEN}}
+          # Optional, defaults to homebrew/core
+          tap: jltml/tap
+          # Formula name, required
+          formula: manymessage
+          # Optional, will be determined automatically
+          tag: ${{github.ref}}
+          # Optional, will be determined automatically
+          revision: ${{github.sha}}
+          # Optional, if don't want to check for already open PRs
+          force: false

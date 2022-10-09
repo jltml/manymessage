@@ -1,16 +1,22 @@
-# Manymessage
+# manymessage
 
 Hi! This is a simple program that sends a message to many people all at once. (Or at least in very, very quick succession.)
 
 ## Installation
 
-You can install with RubyGems!
+You can install with RubyGems or Homebrew!
+
+For Homebrew:
 
 ```shell
-$ gem install manymessage
+brew install jltml/tap/manymessage
 ```
 
-I'm hopefully going to add Homebrew soon, too.
+For RubyGems:
+
+```shell
+gem install manymessage
+```
 
 ## Usage
 
