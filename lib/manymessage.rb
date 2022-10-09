@@ -28,7 +28,7 @@ module Manymessage
     abort Paint["No input file specified with list of contacts", :red, :bold] unless options[:input_path]
     abort Paint["No message file specified", :red, :bold] unless options[:input_path]
     input_path = options[:input_path]
-    contacts_cli_path = options[:contacts_cli_path] || Pathname.new(__dir__).parent.to_s + "/exe/contacts_cli"
+    contacts_cli_path = options[:contacts_cli_path] || Pathname.new(__dir__).parent.to_s + "/exe/contacts-cli"
 
     if File.exist?(contacts_cli_path) || File.which("contacts-cli")
       puts Paint["→ contacts-cli already found; skipping download and chmod", :faint]
