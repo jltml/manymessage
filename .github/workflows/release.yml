@@ -4,6 +4,9 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Which Git tag to release (e.g. vO.1.O)'
 
 jobs:
   homebrew:
@@ -21,7 +24,7 @@ jobs:
           # Formula name, required
           formula: manymessage
           # Optional, will be determined automatically
-          tag: ${{github.ref}}
+          tag: ${{github.ref || github.event.inputs.tags}}
           # Optional, will be determined automatically
           revision: ${{github.sha}}
           # Optional, if don't want to check for already open PRs
